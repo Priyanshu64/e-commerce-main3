@@ -1,0 +1,177 @@
+{% load widget_tweaks %}
+
+{% block body %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 5px;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: flex-start; /* Change to flex-start */
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        max-width: 600px;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        margin-left: 20px; /* Add margin to move it to the left */
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #007bff;
+        text-decoration: underline; /* Add underline */
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    input {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        transition: border-color 0.3s ease-in-out;
+        width: 100%; /* Increase width to 100% */
+    }
+
+    input:focus {
+        border-color: #007bff;
+    }
+
+    button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h1 class="page-title">Create{% if form.instance.id %} / Update{% endif %} Address</h1>
+                </div>
+            </div> <!-- end row -->
+        </div>
+        <!-- end page-title -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card m-b-30">
+                    <div class="card-body">
+                        <form class="form-horizontal m-t-30" method="POST" enctype="multipart/form-data">
+                            {% include "elements/form.html" with form=form %}
+                            {{form.errors}}
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="reset" class="btn btn-secondary">Reset</button>
+                                <button type="cancel" class="btn btn-danger"><a class="text-white" href="{% url 'website' %}" style="text-decoration: none;">Cancel</a></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div> <!-- end col -->
+        </div> <!-- end row -->
+    </div>
+</div>
+
+
+<style>
+    /* Your existing styles */
+
+    .table-container {
+        flex: 1; /* Occupy remaining space */
+        padding: 300px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: -180px;
+    }
+
+    .table th,
+    .table td {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: left;
+    }
+</style>
+
+
+            <div class="col-6 table-container">
+                <table id="datatable" class="table table-striped table-sm table-hover w-100">
+                    <thead>
+                        <tr>
+                            <th>Street</th>
+                            <th>City</th>
+                            <th>State</th>
+                            <th>Zip Code</th>
+                            <th class="no-sort"> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for address in data %}
+                            <tr>
+                                <td>{{ address.street }}</td>
+                                <td>{{ address.city }}</td>
+                                <td>{{ address.state }}</td>
+                                <td>{{ address.zip_code }}</td>
+                                <td>
+                                    <center>
+                                        <a href="{% url 'addedit' address.id %}" role="button" class="btn btn-warning btn-xs mr-1 text-white">Edit</a>
+                                    </center>
+                                    <center>
+                                        <form method="post" action="{% url 'add_delete' address.id %}" style="display: inline-block;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure you want to delete this address?')">Delete</button>
+                                        </form>
+                                    </center>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+
+
+
+<input type="hidden" name="list_page_url" id="list_page_url" value="{% url 'address_list_ajax' %}">
+
+{% endblock %}
+
+
+
